@@ -14,7 +14,7 @@ module big_gear()
 	difference(){
 		union(){
 			gear (
-		number_of_teeth=24,
+		number_of_teeth=33,//24,
 		circular_pitch=335,
 		rim_thickness=5,
 		bore_diameter=4.8);

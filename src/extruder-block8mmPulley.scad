@@ -14,14 +14,13 @@ frontNozzleY = 25;
 m5NutDia = 9;
 m5NutThick = 5;
 
-hobbedPulleyDia = 12.7;//8
-hobbingDia = 10.8-0.3;//6.15
+hobbedPulleyDia = 8;//12.7;
+hobbingDia = 6.15;//10.8;
 hobbedPullyGrubDia = 2*6.7;
 hobbedPullyGrubFromBase = 4.5;
 
 
-hobbedPulleyCutDia = hobbedPulleyDia+0.4;
-hobbedPulleyLen = 12;
+hobbedPulleyCutDia = hobbedPulleyDia+0.5;
 
 slotAngle = 0;//80;//36;
 m3Dia = 3.6;
@@ -36,7 +35,7 @@ shaftSpacing = 36.5;//36.5-1;//37.2; //40.3 measured for Einstein rework 10 and 
 							//Measured to be 36.5 with teeth pushed as close as possible.
 
 shaftSpacingYInitial = 29.1;
-motorRaise = 10;
+motorRaise = 0;
 //motorRaise = sqrt(pow(shaftSpacing,2)-pow(shaftSpacingYInitial,2));
 motorYExtra = sqrt(pow(shaftSpacing,2)-pow(motorRaise-extraHeight,2))-shaftSpacingYInitial;
 
@@ -178,13 +177,10 @@ translate([-5-10,13+9,0])
 translate([extraHeight,0,0])
 	{
 	// Main shaft cylinder cut
-	//translate([21,8.1,1+6+0.5]) cylinder(d=hobbedPulleyCutDia, h=total_height-9-1.5, $fn=50);
-	translate([21,8.1,1+6+0.5+m5NutThick-1.6]) cylinder(d=hobbedPulleyCutDia, h=hobbedPulleyLen+2.2, $fn=50);
-
+	translate([21,8.1,7.5]) cylinder(d=hobbedPulleyCutDia, h=total_height-9-1.5, $fn=50);
 	// Main shaft box cut
-	translate([-hobbedPulleyCutDia/2+21,8,1+6+0.5+m5NutThick-1.6]) 
-//		cube([hobbedPulleyCutDia,hobbedPulleyCutDia+10,total_height-12]);
-		cube([hobbedPulleyCutDia,hobbedPulleyCutDia+10,hobbedPulleyLen+2.2]);
+	translate([-hobbedPulleyCutDia/2+21,8,1+6+0.5]) 
+		cube([hobbedPulleyCutDia,hobbedPulleyCutDia+10,total_height-12]);
 
 	// Entry main shaft cylinder cut
 	translate([21,8.1,-1]) cylinder(r=6, h=3, $fn=50);
@@ -206,7 +202,7 @@ translate([extraHeight,0,0])
 
 
 // X-carriage mounting holes
-translate([-5+0.2,13+8.5-8,0]){
+translate([-5+0.2,13+8.5-4,0]){
 	translate([0,12,-1])rotate([0,0,0])cylinder(d=m3BoltHeadDia, h=total_height-10+1-10, $fn=32);
 	translate([0,12,total_height-22])rotate([0,0,0])cylinder(r=3.3/2, h=70, $fn=15);
 	translate([0,0-38,-1])rotate([0,0,0])cylinder(d=m3BoltHeadDia, h=total_height-10+1-10, $fn=32);
@@ -236,8 +232,7 @@ translate([extraHeight,0,-(52-total_height)-2])
 
 	// Idler 608 bearing cutout
 	//translate([21,24+2,35]) cylinder(r=12, h=17.5-1.5, $fn=90);
-	//translate([21,8.1+hobbingDia/2+0.6+12,35]) cylinder(r=12, h=17.5-1.5, $fn=90);
-	translate([21,8.1+hobbingDia/2+0.6+11,35]) cylinder(r=12, h=17.5-1.5, $fn=90);
+	translate([21,8.1+hobbingDia/2+0.6+12,35]) cylinder(r=12, h=17.5-1.5, $fn=90);
 
 
 
