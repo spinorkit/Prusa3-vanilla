@@ -28,7 +28,8 @@ m3Dia = 3.6;
 
 m3BoltHeadDia = 6.3;
 
-motor_lenght = 23+m5NutThick;//28//34;
+minMotorLen = 23+m5NutThick;
+motor_lenght = minMotorLen+0;//28//34;
 motorPlateThick = 6;
 //29.74 is the sum of the pitch radius values for the original 8 and 24 tooth pulleys
 //37.2 is the sum for 8 and 32 tooth pulleys
@@ -179,12 +180,13 @@ translate([extraHeight,0,0])
 	{
 	// Main shaft cylinder cut
 	//translate([21,8.1,1+6+0.5]) cylinder(d=hobbedPulleyCutDia, h=total_height-9-1.5, $fn=50);
-	translate([21,8.1,1+6+0.5+m5NutThick-1.6]) cylinder(d=hobbedPulleyCutDia, h=hobbedPulleyLen+2.2, $fn=50);
+	translate([21,8.1,1+6+0.5+m5NutThick-1.6]) 
+		cylinder(d=hobbedPulleyCutDia, h=hobbedPulleyLen+2.2+motor_lenght-minMotorLen, $fn=50);
 
 	// Main shaft box cut
 	translate([-hobbedPulleyCutDia/2+21,8,1+6+0.5+m5NutThick-1.6]) 
 //		cube([hobbedPulleyCutDia,hobbedPulleyCutDia+10,total_height-12]);
-		cube([hobbedPulleyCutDia,hobbedPulleyCutDia+10,hobbedPulleyLen+2.2]);
+		cube([hobbedPulleyCutDia,hobbedPulleyCutDia+10,hobbedPulleyLen+2.2+motor_lenght-minMotorLen]);
 
 	// Entry main shaft cylinder cut
 	translate([21,8.1,-1]) cylinder(r=6, h=3, $fn=50);
@@ -206,7 +208,7 @@ translate([extraHeight,0,0])
 
 
 // X-carriage mounting holes
-translate([-5+0.2,13+8.5-8,0]){
+translate([-5+0.2,15,0]){
 	translate([0,12,-1])rotate([0,0,0])cylinder(d=m3BoltHeadDia, h=total_height-10+1-10, $fn=32);
 	translate([0,12,total_height-22])rotate([0,0,0])cylinder(r=3.3/2, h=70, $fn=15);
 	translate([0,0-38,-1])rotate([0,0,0])cylinder(d=m3BoltHeadDia, h=total_height-10+1-10, $fn=32);
