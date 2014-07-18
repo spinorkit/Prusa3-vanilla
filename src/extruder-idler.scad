@@ -10,9 +10,35 @@ include<extruderConfig.scad>
 
 
 extraThickness = 5;
+filaSlotWidth = 3.3;
+ballBearingDia = 22; //608zz
+bearingRodDia = 8;   //M8 grub screw (25mm)
+filaSlotLen = 4.5;
+standVerticalAdj = 1;  //thin the bottom so it stands vertical when clamping the filament
+bearingRodCenterToInnerSurface = 4.1+3-2;
+guideLen = ballBearingDia/2-bearingRodCenterToInnerSurface+filaSlotLen;//14;
+echo(guideLen);
+blockMaxThickness = bearingRodDia+3+extraThickness;
 
 module extruder_idler_base(){
- translate([0.25,0,0]) cube([24,42+extraHeight,8+3+extraThickness]);
+ translate([0.25,0,0])
+	{ 
+	cube([24,42+extraHeight,blockMaxThickness]);
+	translate([(24-9)/2-0.25,42+extraHeight-9.5,blockMaxThickness])
+		{
+		difference()
+			{
+			cube([9,9.5,guideLen]);
+			translate([(9-filaSlotWidth)/2,0,guideLen-filaSlotLen])
+				{
+				cube([filaSlotWidth,10,filaSlotLen]);
+				translate([filaSlotWidth/2,10,0])
+					rotate([90,0,0])
+					cylinder(d = filaSlotWidth,h=10,$fn = 16);
+				}	
+			}
+		}
+	}
 
 }
 
@@ -41,7 +67,7 @@ translate([-0.5,29,-0.01])
 	hull()
 		{
 		cube([25,20,0.1]);	
-		translate([0,3.5,extraThickness])
+		translate([0,3.5,extraThickness+screwTrapAdj-3.5])
 	   	cube([25,20,0.1]);
 		}	
 	}
@@ -53,7 +79,7 @@ translate([-0.5,-extraHeight,-0.01])
 	hull()
 		{
 		cube([25,9+extraHeight,0.1]);	
-		translate([0,-3.5,extraThickness])
+		translate([0,-3.5,extraThickness+standVerticalAdj])
 	   	cube([25,9,0.1]);
 		}	
 	}

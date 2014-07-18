@@ -7,17 +7,22 @@
 
 include<extruderConfig.scad>
 
+//For two 625ZZ Bearings (5x16x5mm)
+
 
 nozzleHoleSep = 50;
 frontNozzleY = 25;
 
-m5NutDia = 9;
+m5NutDia = 9+0.5;
 m5NutThick = 5;
 
-hobbedPulleyDia = 12.7;//8
-hobbingDia = 10.8-0.3;//6.15
-hobbedPullyGrubDia = 2*6.7;
-hobbedPullyGrubFromBase = 4.5;
+hobbedPulleyDia = 9;//12.7;//8
+hobbingDia = 6.9;//10.5;//6.15
+hobbedPullyGrubDia = 5+2*4;//2*6.7;
+hobbedPullyGrubFromBase = 5.1;//4.5;
+
+upperFilamentSlotDia = 10;
+upperFilamentholeDia = 4;
 
 
 hobbedPulleyCutDia = hobbedPulleyDia+0.4;
@@ -51,10 +56,17 @@ motorYExtra = sqrt(pow(shaftSpacing,2)-pow(motorRaise-extraHeight,2))-shaftSpaci
 module nozzlemount()
 {
 	// Filament hole	
-	rotate([0,90,0]) cylinder(r=2, h=70, $fn=30);
+	rotate([0,90,0]) cylinder(d=upperFilamentholeDia, h=70, $fn=30);
 
-	//oval hole above hobbed bolt
-	translate([17+10+hobbedPulleyDia+extraHeight,-1,0]) rotate([0,90,0]) cylinder(r=2, h=20, $fn=30);
+	//cutout above hobbed bolt
+	translate([17+10-1+hobbedPulleyDia+extraHeight,-upperFilamentholeDia-1,-upperFilamentSlotDia/2]) 
+		//rotate([0,90,0]) cylinder(r=2, h=20, $fn=30);
+		hull()
+			{
+			cube([20,0.01,upperFilamentSlotDia]);
+			translate([0,upperFilamentSlotDia+1,-upperFilamentSlotDia/2])
+   			cube([20,0.01,2.16*upperFilamentSlotDia]);
+			}
 
 
 	// Tapered filament intake after the drive gear
@@ -99,10 +111,10 @@ difference()
 		translate([0,-42-2-motorYExtra,0]) cube([42+motorRaise+1,42+3+2+motorYExtra,motorPlateThick]);
 	
 		// Base plate (nozzle is secured to it)
-		translate([-8.99,-42-5,0]) cube([9,80+5+5+5,total_height]);
+		translate([-8.99,-42-5,0]) cube([9,80+5+4-4,total_height]);
 	
 		// IDLER retainer
-		translate([-1,30,0]) cube([6, 8+2, total_height]);
+		translate([-1,30,0]) cube([6, 8+2+1-4, total_height]);
 	
 			// Top bridge holding idler retainer form springing
 			translate([-1,15,total_height-1]) cube([6, 20, 1]);
@@ -110,30 +122,49 @@ difference()
 			// Bottom bridge holding idler retainer form springing
 			translate([-1,15,total_height-30-motorPlateThick+5]) cube([6, 20, 2+motorPlateThick-5]);
 
-//Uncomment to see mount holes outside block
-translate([-5-10,13+9,0])
-	{
-//	translate([0,12,-1])rotate([0,0,0])cylinder(d=m3BoltHeadDia, h=total_height-10+1-10, $fn=15);
-//	translate([0,12,total_height-22])rotate([0,0,0])cylinder(r=3.3/2, h=70, $fn=15);
-//	translate([0,0-38,-1])rotate([0,0,0])cylinder(d=m3BoltHeadDia, h=total_height-10+1-10, $fn=15);
-//	translate([0,0-38,total_height-22])rotate([0,0,0])cylinder(r=3.3/2, h=70, $fn=15);
-//	translate([0,0-18,-1])rotate([0,0,0])cylinder(d=m3BoltHeadDia, h=total_height-10+1-8, $fn=15);
-//	translate([0,0-18,total_height-22])rotate([0,0,0])cylinder(r=3.3/2, h=70, $fn=15);
-	}
+	//Uncomment to see mount holes outside block
+	translate([-5-10,13+9,0])
+		{
+	//	translate([0,12,-1])rotate([0,0,0])cylinder(d=m3BoltHeadDia, h=total_height-10+1-10, $fn=15);
+	//	translate([0,12,total_height-22])rotate([0,0,0])cylinder(r=3.3/2, h=70, $fn=15);
+	//	translate([0,0-38,-1])rotate([0,0,0])cylinder(d=m3BoltHeadDia, h=total_height-10+1-10, $fn=15);
+	//	translate([0,0-38,total_height-22])rotate([0,0,0])cylinder(r=3.3/2, h=70, $fn=15);
+	//	translate([0,0-18,-1])rotate([0,0,0])cylinder(d=m3BoltHeadDia, h=total_height-10+1-8, $fn=15);
+	//	translate([0,0-18,total_height-22])rotate([0,0,0])cylinder(r=3.3/2, h=70, $fn=15);
 		}
+
+	translate([-2,41,0])
+		//Shear the cylinder
+		multmatrix(m = [  [1, 0, 0, 0],
+                 		   [0, 1, -0.1, 0],
+                        [0, 0, 1, 0],
+                        [0, 0, 0,  1]
+                        ])
+		{
+		cylinder(d=14,h=total_height);
+		translate([0,-5/2,total_height/2])
+			cube([14,5,total_height],true);
+		}
+	}
 
 //Pretty corners
 
 	// Cutaway corner base plate (motor side)
 	translate([-3-18,-70-motorYExtra,-1])rotate([0,0,53-20])cube([70,70,120],true);
 	// Cutaway corner base plate (idler side)
-	translate([-32,13.5+13,-1])rotate([0,0,40])cube([40,40,60]);
+	//translate([-32,13.5+13,-1])rotate([0,0,40])cube([40,40,60]);
 
 	// Cutaway corner base block (idler side)
 	translate([46+extraHeight,12,-1])rotate([0,0,45])cube([40,40,60]);
 
 	// Cutaway corner idler retainer
-	translate([6,33+1,-1])rotate([0,0,45])cube([40,40,60]);
+	//translate([6,33+1,-1])rotate([0,0,45])cube([40,40,60]);
+
+//Idler retainer warp saving cutout
+	translate([5,41,motorPlateThick])
+		translate([0,3,total_height/2])
+			cube([14,15,total_height],true);
+
 
 // Pretty cutouts
 	// Idler retainer pretty cuts
@@ -208,14 +239,15 @@ translate([extraHeight,0,0])
 
 
 // X-carriage mounting holes
-translate([-5+0.2,15,0]){
-	translate([0,12,-1])rotate([0,0,0])cylinder(d=m3BoltHeadDia, h=total_height-10+1-10, $fn=32);
-	translate([0,12,total_height-22])rotate([0,0,0])cylinder(r=3.3/2, h=70, $fn=15);
-	translate([0,0-38,-1])rotate([0,0,0])cylinder(d=m3BoltHeadDia, h=total_height-10+1-10, $fn=32);
-	translate([0,0-38,total_height-22])rotate([0,0,0])cylinder(r=3.3/2, h=70, $fn=15);
-	//translate([0,0-18,-1])rotate([0,0,0])cylinder(d=m3BoltHeadDia, h=total_height-10+1-8, $fn=32);
-	//translate([0,0-18,total_height-22])rotate([0,0,0])cylinder(r=3.3/2, h=70, $fn=15);
-}
+//translate([-5+0.2,15-3.5,0])
+//	{
+//	translate([0,12,-1])rotate([0,0,0])cylinder(d=m3BoltHeadDia, h=total_height-10+1-10, $fn=32);
+//	translate([0,12,total_height-22])rotate([0,0,0])cylinder(r=3.3/2, h=70, $fn=15);
+//	translate([0,0-38,-1])rotate([0,0,0])cylinder(d=m3BoltHeadDia, h=total_height-10+1-10, $fn=32);
+//	translate([0,0-38,total_height-22])rotate([0,0,0])cylinder(r=3.3/2, h=70, $fn=15);
+//	//translate([0,0-18,-1])rotate([0,0,0])cylinder(d=m3BoltHeadDia, h=total_height-10+1-8, $fn=32);
+//	//translate([0,0-18,total_height-22])rotate([0,0,0])cylinder(r=3.3/2, h=70, $fn=15);
+//	}
 
 // Idler nuts, filament channel and 608 idler bearing cut
 translate([extraHeight,0,-(52-total_height)-2])
@@ -223,9 +255,9 @@ translate([extraHeight,0,-(52-total_height)-2])
 	// Nozzle mounting holes
 	translate([-10-extraHeight,8.1+hobbingDia/2+1.4,52-12]) nozzlemount();
 	// Front idler screw nut trap
-	translate([32.5,7,52-12-7-3]) cube([15,3,5.7]);
+	translate([32.5,7-screwTrapAdj,52-12-7-3]) cube([15,3,5.7]);
 	// Back idler screw nut trap
-	translate([32.5,7,52-12-7-3+14]) cube([15,3,5.7]);
+	translate([32.5,7-screwTrapAdj,52-12-7-3+14]) cube([15,3,5.7]);
 
 	// Back top idler screw hole
 	translate([5+32,-1,52-12+7]) rotate([0,90,90]) rotate([0,0,30]) cylinder(r=2, h=40, $fn=6);
@@ -238,8 +270,8 @@ translate([extraHeight,0,-(52-total_height)-2])
 
 	// Idler 608 bearing cutout
 	//translate([21,24+2,35]) cylinder(r=12, h=17.5-1.5, $fn=90);
-	//translate([21,8.1+hobbingDia/2+0.6+12,35]) cylinder(r=12, h=17.5-1.5, $fn=90);
-	translate([21,8.1+hobbingDia/2+0.6+11,35]) cylinder(r=12, h=17.5-1.5, $fn=90);
+	translate([21,8.1+hobbingDia/2+0.6+12,35]) cylinder(r=12, h=17.5-1.5, $fn=90);   //6 mm hobbingDia
+	//translate([21,8.1+hobbingDia/2+0.6+11,35]) cylinder(r=12, h=17.5-1.5, $fn=90); //10.5 mm hobbingDia
 
 
 
@@ -248,7 +280,11 @@ translate([extraHeight,0,-(52-total_height)-2])
 translate([21+extraHeight,8.1,-1])
 	{ 
 	translate([0,0,1+6+1+m5NutThick])
-		cylinder(d=hobbedPullyGrubDia+0.1, h=hobbedPullyGrubFromBase, $fn=50);
+		{
+		cylinder(d=hobbedPullyGrubDia+0.3, h=hobbedPullyGrubFromBase, $fn=50);
+		translate([0,5,hobbedPullyGrubFromBase/2])
+	   	cube([hobbedPullyGrubDia+0.1,10,hobbedPullyGrubFromBase],true);
+		}
 
 	translate([0,0,1+6])
 		{
