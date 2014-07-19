@@ -4,6 +4,8 @@
 // Josef Průša <iam@josefprusa.cz>, Kliment Yanev and contributors
 // http://www.reprap.org/wiki/Prusa_Mendel
 // http://prusamendel.org
+//
+//Reworked and more parameters added by Kit Adams (spinorkit).
 
 include<extruderConfig.scad>
 
@@ -33,16 +35,23 @@ m3Dia = 3.6;
 
 m3BoltHeadDia = 6.3;
 
+baseBottomToMotorBottom = 18.5; //Adjust this raise the motor to clear the top of the x carriage
+										  //so that the motor_lenght can be reduced, so that the centre of
+										  //mass is closer to the x rods in the y direction.
+										  //18.5 is for the Prusa Einstein rework x carriage
+
 minMotorLen = 23+m5NutThick;
 motor_lenght = minMotorLen+0;//28//34;
 motorPlateThick = 6;
+
+
 //29.74 is the sum of the pitch radius values for the original 8 and 24 tooth pulleys
 //37.2 is the sum for 8 and 32 tooth pulleys
 shaftSpacing = 36.5;//36.5-1;//37.2; //40.3 measured for Einstein rework 10 and 43
 							//Measured to be 36.5 with teeth pushed as close as possible.
 
 shaftSpacingYInitial = 29.1;
-motorRaise = 10;
+motorRaise = baseBottomToMotorBottom-8.5;
 //motorRaise = sqrt(pow(shaftSpacing,2)-pow(shaftSpacingYInitial,2));
 motorYExtra = sqrt(pow(shaftSpacing,2)-pow(motorRaise-extraHeight,2))-shaftSpacingYInitial;
 
